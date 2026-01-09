@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+<p>Total feedback: {{ total }}</p>
+<p>Average rating: {{ avg_rating }}</p>
+
+<a href="{{ url_for('export_csv') }}">Export as CSV</a>
+
+<h3>Ratings Distribution</h3>
+<canvas id="ratingChart" width="400" height="200"></canvas>
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Rating</th>
+        <th>Comments</th>
+        <th>Date Submitted</th>
+    </tr>
+    {% for f in feedbacks %}
+    <tr>
+        <td>{{ f.id }}</td>
+        <td>{{ f.name }}</td>
+        <td>{{ f.email }}</td>
+        <td>{{ f.rating }}</td>
+        <td>{{ f.comments }}</td>
+        <td>{{ f.date_submitted.strftime('%Y-%m-%d %H:%M') }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<script>
+    const data = { rating_counts , tojson };
+    const labels = Object.keys(data);
+    const values = Object.values(data);
+
+    new Chart(document.getElementById('ratingChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Number of Feedbacks',
+                data: values,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+{% endblock %}
